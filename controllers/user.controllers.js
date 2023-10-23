@@ -1,6 +1,7 @@
 const user = require("../models/user.schema")
 
 const Home = (req, res) => {
+    console.log(req.cookies);
     res.send("Welcome to the controllers")
 }
 
@@ -19,33 +20,57 @@ const signup = async (req, res) => {
         return res.send(error.message)
     }
 }
+const getlogin = (req, res) => {
+    res.render("login")
+}
 
 const login = async (req, res) => {
-    try {
-        const data = await user.findOne({ email: req.body.email })
-        if (!data) {
-            return res.send("user not found")
-        }
-        if (data.password != req.body.password) {
-            return res.send("worng password")
-        }
-        return res.send("logged in")
-    }
-    catch (error) {
-        return res.send(error.message)
-    }
+    // try {
+    //     const data = await user.findOne({ email: req.body.email })
+    //     if (!data) {
+    //         return res.send("user not found")
+    //     }
+    //     if (data.password != req.body.password) {
+    //         return res.send("worng password")
+    //     }
+    //     return res.send("logged in")
+    // }
+    // catch (error) {
+    //     return res.send(error.message)
+    // }
+
+    res.send("logged in")
+
 }
 
 const index = (req, res) => {
-    res.render("index")
+    res.cookie("name", "anu").render("index")
 }
 
-const form = (req,res)=>{
+const form = (req, res) => {
     res.render("form")
 }
 
-const icon = (req,res)=>{
+const icon = (req, res) => {
     res.render("icon")
 }
 
-module.exports = { Home, signup, login, index, form, icon }
+const profile = (req, res) => {
+    if (req.user) {
+        res.send(req.user)
+    }
+    else {
+        res.redirect("/login")
+    }
+}
+
+const removeuser = (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send("logout")
+    })
+}
+
+module.exports = { Home, signup, login, index, form, icon, getlogin, profile, removeuser }
